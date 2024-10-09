@@ -2,7 +2,7 @@
 apiVersion: v2
 
 # Nom de l'application déployée
-name: minikube-skeleton
+name: symfony-cast
 
 # Version du chart : doit changer si l'application change ou si la configuration du chart change
 version: 4

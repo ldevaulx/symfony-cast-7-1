@@ -6,8 +6,8 @@
 # Variables à définir
 # ===================
 
-NAMESPACE=minikube-skeleton
-HELM_NAME   := minikube-skeleton
+NAMESPACE=symfony-cast
+HELM_NAME   := symfony-cast
 
 PHP_SOURCES := ./src/ ./public/
 

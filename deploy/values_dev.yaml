@@ -43,7 +43,7 @@ Nfs:
   MountSource: true
   Server: "nfsserver"
   Export: "/opt/passman/src/"
-  Path: "minikube-skeleton"
+  Path: "symfony-cast-7-1"
 
 
 

@@ -5,8 +5,8 @@
 
 
 
-AppName: "minikube-skeleton"
-AppPartOf: "minikube-skeleton"
+AppName: "symfony-cast"
+AppPartOf: "symfony-cast"
 AppComponent: "php-fpm"
 
 ########################
@@ -43,7 +43,7 @@ Deployment:
       SENTRY_ENV: "prod"
       TRANSLATION_BASE_URL: "https://www.cdn-wifi.tech/portails/ressources/translations"
       RESOURCES_BASE_URL: "https://www.cdn-wifi.tech/portails/ressources/"
-      SUBPATH_PREFIX: "/api/public"
+      SUBPATH_PREFIX: "/symfony-cast"
       MAILER_DSN: "smtp://AKIAWPGPKD32OB4SKF3O:BADvf7RsRzt0GDIk6R0Bmm4lssuzUktvfPudnIyRPoBF@email-smtp.eu-west-1.amazonaws.com:465?encryption=tls&auth_mode=login"
       EMAIL_FROM: "no-reply@wifipass.org"
       PAYZEN_USERNAME: "16089380"
@@ -89,7 +89,7 @@ Ingress:
   Host: "www.dc-wifi.tech"
 
   ## Chemin (avec / final)
-  SubPath: "/minikube-skeleton/"
+  SubPath: "/symfony-cast/"
 
   ## Fichier index éventuel (optionel)
   ## Il sera ajouté aux requetes se terminant par "/"
