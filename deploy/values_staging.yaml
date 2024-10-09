@@ -1,0 +1,21 @@
+## Déploiement API des portails
+##
+## Fichier de values pour déploiement Staging
+## On ne surcharge que les valeurs spécifiques à la Staging
+
+Deployment:
+  Replica: 1
+
+  Env:
+    plain:
+      TRANSLATION_BASE_URL: "https://www.staging-wifi.tech/portails/ressources/translations"
+      RESOURCES_BASE_URL: "https://www.staging-wifi.tech/portails/ressources/"
+      PAYZEN_PASSWORD: "testpassword_8tNnlOR1Wwa4NTgrP5KV3ClCyFurS8a8VX5JjO6xmIakP"
+      SENTRY_ENV: "staging"
+      MYSQL_ENCRYPT_KEY: "maclef"
+Ingress:
+  Tls:
+    SecretName: "www-staging-wifi-tech-tls"
+
+  ## Hostname
+  Host: "www.staging-wifi.tech"

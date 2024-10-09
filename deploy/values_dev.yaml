@@ -1,0 +1,55 @@
+## Déploiement API des portails
+##
+## Fichier de values pour déploiement DEV
+## On ne surcharge que les valeurs spécifiques à la Dev
+
+
+Deployment:
+  Replica: 1
+  Strategy: Recreate
+  Image:
+    repository: "444963888884.dkr.ecr.eu-west-3.amazonaws.com/dev/build-php-8.2"
+    tag: "v2-dev"
+
+  Resources:
+    Enable: false
+
+  Monitoring: false
+
+  Env:
+    plain:
+      APP_ENV: "dev"
+
+      JWT_SECRET_KEY: "D7CC5437F4DEADAF6283BA3444167C14F772B6326504E7BA3EAECB22324B7C47"
+      SENTRY_DSN: "EMPTY"
+      SENTRY_ENV: "dev"
+      TRANSLATION_BASE_URL: "http://minikube/portails/ressources/translations"
+      RESOURCES_BASE_URL: "http://minikube/portails/ressources/"
+
+      PAYZEN_PASSWORD: "testpassword_8tNnlOR1Wwa4NTgrP5KV3ClCyFurS8a8VX5JjO6xmIakP"
+      # PAYZEN_HMAC: "lwL7GPU31n6e54HSDpIt1GiEkFG75uwsjJKuccW29hDkM"
+      BILL_PREFIX: "DEV"
+      MYSQL_ENCRYPT_KEY: "maclef"
+
+
+Ingress:
+  Tls:
+    Enable: false
+  ## Hostname
+  Host: "minikube"
+
+
+Nfs:
+  MountSource: true
+  Server: "nfsserver"
+  Export: "/opt/passman/src/"
+  Path: "minikube-skeleton"
+
+
+
+
+#######################
+## Database secrets   #
+#######################
+Secrets:
+  Create: true

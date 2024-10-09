@@ -1,0 +1,51 @@
+{{ if .Values.Ingress.EnablePhpFpm }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    ## Choosing the ingree to use
+    kubernetes.io/ingress.class: {{ .Values.Ingress.Class }}
+    ## Using FastCGI protocol (TCP/9000)
+    nginx.ingress.kubernetes.io/backend-protocol: "FCGI"
+    ## Extra needed fastcgi-params to be loaded from a configmap
+    nginx.ingress.kubernetes.io/fastcgi-params-configmap: {{.Release.Namespace}}/{{ .Release.Name }}
+    {{ if .Values.Ingress.RemoveSubPath }}
+    ## Rewrite the path keeping only the part after the subpath (with / prefix)
+    ## When rewrite is enabled, the variable $fastcgi_script_name is updated (without the subpath)
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+    {{ end }}
+    {{ if .Values.Ingress.PhpIndex }}
+    ## Default filename added for requests ending with "/"
+    nginx.ingress.kubernetes.io/fastcgi-index: {{ .Values.Ingress.PhpIndex }}
+    {{ end }}
+    {{ if .Values.Ingress.Tls.Enable }}
+    {{ if .Values.Ingress.Tls.ClusterIssuer }}
+    cert-manager.io/cluster-issuer: {{ .Values.Ingress.Tls.ClusterIssuer }}
+    {{ end }}
+    {{ end }}
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.AppName }}
+    app.kubernetes.io/part-of: {{ .Values.AppPartOf }}
+    app.kubernetes.io/component: {{ .Values.AppComponent }}
+
+spec:
+  {{ if .Values.Ingress.Tls.Enable }}
+  tls:
+  - hosts:
+    - {{ .Values.Ingress.Host }}
+    secretName: {{ .Values.Ingress.Tls.SecretName }}
+  {{ end }}
+  rules:
+  - host: {{ .Values.Ingress.Host }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Release.Name }}
+            port:
+              number: 9000
+        ## If rewrite enabled, the first capture group "$1" is the path after the subpath
+        path: {{ .Values.Ingress.SubPath }}{{ if .Values.Ingress.RemoveSubPath }}(.*){{ end }}
+        pathType: ImplementationSpecific
+{{ end }}

@@ -1,0 +1,126 @@
+## Déploiement API des portails
+##
+## Fichier de values pour déploiement PROD
+## Pour les autres déploiements (dev, staging) se référer à leur fichier de values respectif
+
+
+
+AppName: "minikube-skeleton"
+AppPartOf: "minikube-skeleton"
+AppComponent: "php-fpm"
+
+########################
+## Deployment          #
+########################
+
+Deployment:
+  Replica: 2
+  Strategy: RollingUpdate
+  Image:
+    repository: "444963888884.dkr.ecr.eu-west-3.amazonaws.com/prod/minikube-skeleton"
+    tag: "2024-04-17_10h37"
+
+  Resources:
+    Enable: true
+    Limits:
+      # cpu: ""
+      Memory: "1Gi"
+    Requests:
+      Cpu: "0.1"
+      Memory: "50Mi"
+
+  Monitoring: true
+
+
+  Env:
+    plain:
+      APP_ENV: "prod"
+      APP_SECRET: "3005fe3ac230d5eb7a764c145a04bf09"
+      JWT_SECRET_KEY: "%kernel.project_dir%/config/jwt/private.pem"
+      JWT_PUBLIC_KEY: "%kernel.project_dir%/config/jwt/public.pem"
+      JWT_PASSPHRASE: "passman"
+      SENTRY_DSN: "https://0e16ba0cada5454e88e79904756da3e6@sentry.dc-wifi.tech/8"
+      SENTRY_ENV: "prod"
+      TRANSLATION_BASE_URL: "https://www.cdn-wifi.tech/portails/ressources/translations"
+      RESOURCES_BASE_URL: "https://www.cdn-wifi.tech/portails/ressources/"
+      SUBPATH_PREFIX: "/api/public"
+      MAILER_DSN: "smtp://AKIAWPGPKD32OB4SKF3O:BADvf7RsRzt0GDIk6R0Bmm4lssuzUktvfPudnIyRPoBF@email-smtp.eu-west-1.amazonaws.com:465?encryption=tls&auth_mode=login"
+      EMAIL_FROM: "no-reply@wifipass.org"
+      PAYZEN_USERNAME: "16089380"
+      PAYZEN_PASSWORD: "prodpassword_3s2T4JceDJPj1cjSDa3BZDZ3XpxW4HSNqlK1kgOdLYPzs"
+      PAYZEN_HMAC: "lwL7GPU31n6e54HSDpIt1GiEkFG75uwsjJKuccW29hDkM"
+      BILL_PREFIX: "PS"
+      MYSQL_ENCRYPT_KEY: "TASXzkBBTdG5apc72eHddWYjZ9jXFaJ9"
+    secret:
+      MYSQL_HOST:
+        name: "mysql-wifipass-portail"
+        key: "host"
+      MYSQL_PORT:
+        name: "mysql-wifipass-portail"
+        key: "port"
+      MYSQL_USER:
+        name: "mysql-wifipass-portail"
+        key: "user"
+      MYSQL_PASSWORD:
+        name: "mysql-wifipass-portail"
+        key: "password"
+
+
+########################
+## Ingress             #
+########################
+
+
+Ingress:
+  ## Choix activation PHP-FPM (et déclaration service/ingress)
+  EnablePhpFpm: true
+
+  ## Choix de l'ingress à utiliser
+  Class: "nginx"
+
+  ## Activation TLS
+  ## Quand tls est activé, nginx ecoute sur le 2 ports sur 80 et 443
+  Tls:
+    Enable: true
+    SecretName: "letsencrypt-sec-prod"
+    # ClusterIssuer: "letsencrypt-staging"
+
+  ## Hostname
+  Host: "www.dc-wifi.tech"
+
+  ## Chemin (avec / final)
+  SubPath: "/minikube-skeleton/"
+
+  ## Fichier index éventuel (optionel)
+  ## Il sera ajouté aux requetes se terminant par "/"
+  ## L'appel sur un nom de répertoire sans le "/" final ne fonctionnera pas
+  # PhpIndex: "index.php"
+
+  ## Réécriture du chemin pour enlever le SubPath
+  RemoveSubPath: false
+
+  ## Racine des fichiers PHP à exécuter
+  PublicRoot: "/work/public"
+
+  ## Fichiers PHP à executer à partir du PublicRoot
+  ## Avec "$fastcgi_script_name", utilisation du chemin de l'appel (avec ou sans SubPath)
+  ## Possibilité de spécifier un nom de fichier comme "/index.php" (avec / initial) et toutes les requetes seront redirigées sur ce fichier
+  ScriptFiles: "/index.php"
+
+
+########################
+## Volume NFS pour DEV #
+########################
+Nfs:
+  MountSource: false
+  # Server: ""
+  # Export: ""
+  # Path: ""
+
+
+
+#######################
+## Database secrets   #
+#######################
+Secrets:
+  Create: false

@@ -1,0 +1,35 @@
+{{ if .Values.Ingress.EnablePhpFpm }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.AppName }}
+    app.kubernetes.io/part-of: {{ .Values.AppPartOf }}
+    app.kubernetes.io/component: {{ .Values.AppComponent }}
+
+data:
+
+  # The most important and mandatory variable for PHP-FPM
+  # Specify the absolute path of the PHP file to be executed
+  SCRIPT_FILENAME: "{{ .Values.Ingress.PublicRoot }}{{ .Values.Ingress.ScriptFiles }}"
+
+  ## Shouldn't needed, but document root corrected
+  ## By default, nginx send its default current document root (not valid in PHP image)
+  DOCUMENT_ROOT: "{{ .Values.Ingress.PublicRoot }}/"
+
+  ## Block HTTP_PROXY header (security)
+  HTTP_PROXY: ""
+
+  ## Used by symfony router
+  ## Keep only the rewrited path, without the subPath
+  # REQUEST_URI: "$fastcgi_script_name"
+
+  ## To execute the script relative to the public directory:
+  ## Relative path of the script (seems unused by symfony - copied to PHP_SELF)
+  # SCRIPT_NAME: "/index.php"
+
+  ## Seems unused by symfony
+  # DOCUMENT_URI: "/index.php"
+
+{{ end }}
